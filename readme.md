@@ -1,0 +1,1 @@
+A thirdperson camera system which can be customised through a menu.
