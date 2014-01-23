@@ -194,7 +194,7 @@ do -- luadata
 		
 		if type(func) == "string" then
 			MsgN("luadata decode error:")
-			MsgN(err)
+			MsgN(func)
 			
 			return {}
 		end
@@ -226,73 +226,73 @@ end
 do -- CVars
 
 	function ctp:InitCVars()
-		self:RegisterCVar("threshold_enabled", 0, "ThresholdEnabled", "boolean")
-		self:RegisterCVar("threshold_radius", 0, "ThresholdRadius", "float", nil, 10)
+		self:RegisterCVar("threshold_enabled", "ThresholdEnabled", "boolean")
+		self:RegisterCVar("threshold_radius", "ThresholdRadius", "float", nil, 10)
 
-		self:RegisterCVar("offset_relative", 1, "OffsetRelative", "boolean")
-		self:RegisterCVar("offset_lock_z", 1, "ZLockEnabled", "boolean")
+		self:RegisterCVar("offset_relative", "OffsetRelative", "boolean")
+		self:RegisterCVar("offset_lock_z", "ZLockEnabled", "boolean")
 
-		self:RegisterCVar("offset_fov_zoom_distance_enabled", 0, "ZoomDistanceEnabled", "boolean")
-		self:RegisterCVar("offset_fov_zoom_distance", 500, "ZoomDistance", "float")
-		self:RegisterCVar("offset_fov_zoom_distance_min", 30, "MinZoomDistance", "float")
-		self:RegisterCVar("offset_fov", 75, "FOV", "float")
-		self:RegisterCVar("offset_right", 0, "Right", "float")
-		self:RegisterCVar("offset_forward", -100, "Forward", "float")
-		self:RegisterCVar("offset_up", 0, "Up", "float")
+		self:RegisterCVar("offset_fov_zoom_distance_enabled", "ZoomDistanceEnabled", "boolean")
+		self:RegisterCVar("offset_fov_zoom_distance", "ZoomDistance", "float")
+		self:RegisterCVar("offset_fov_zoom_distance_min", "MinZoomDistance", "float")
+		self:RegisterCVar("offset_fov", "FOV", "float")
+		self:RegisterCVar("offset_right", "Right", "float")
+		self:RegisterCVar("offset_forward", "Forward", "float")
+		self:RegisterCVar("offset_up", "Up", "float")
 
-		self:RegisterCVar("smoother_origin", 0.1, "OriginSmoother", "float")
-		self:RegisterCVar("smoother_direction", 0.1, "DirectionSmoother", "float")
-		self:RegisterCVar("smoother_nodes_direction", 50, "NodeDirectionSmoother", "float")
-		self:RegisterCVar("smoother_fov", 0.1, "FOVSmoother", "float")
+		self:RegisterCVar("smoother_origin", "OriginSmoother", "float")
+		self:RegisterCVar("smoother_direction", "DirectionSmoother", "float")
+		self:RegisterCVar("smoother_nodes_direction", "float")
+		self:RegisterCVar("smoother_fov", "FOVSmoother", "float")
 
-		self:RegisterCVar("lerp_aim", 0, "AimLerp", "float")
+		self:RegisterCVar("lerp_aim", "AimLerp", "float")
 
-		self:RegisterCVar("angles_roll_amount", 0, "RollAmount", "float")
+		self:RegisterCVar("angles_roll_amount", "RollAmount", "float")
 
-		self:RegisterCVar("angles_limit", 0, "AngleLimitEnabled", "boolean")
-		self:RegisterCVar("angles_limit_smooth", 0, "AngleLimitSmoothEnabled", "boolean")
+		self:RegisterCVar("angles_limit", "AngleLimitEnabled", "boolean")
+		self:RegisterCVar("angles_limit_smooth", "AngleLimitSmoothEnabled", "boolean")
 
-		self:RegisterCVar("angles_pitch", 0, "UserPitch", "float")
-		self:RegisterCVar("angles_yaw", 0, "UserYaw", "float")
-		self:RegisterCVar("angles_roll", 0, "UserRoll", "float")
+		self:RegisterCVar("angles_pitch", "UserPitch", "float")
+		self:RegisterCVar("angles_yaw", "UserYaw", "float")
+		self:RegisterCVar("angles_roll", "UserRoll", "float")
 
-		self:RegisterCVar("target_enable", 0, "TargettingEnabled", "boolean")
-		self:RegisterCVar("target_radius", 0, "TargetRadius", "float")
-		self:RegisterCVar("target_lerp", 0.3, "TargetLerp", "float")
-		self:RegisterCVar("target_fov", 40, "TargetFOV", "float")
+		self:RegisterCVar("target_enable", "TargettingEnabled", "boolean")
+		self:RegisterCVar("target_radius", "TargetRadius", "float")
+		self:RegisterCVar("target_lerp", "TargetLerp", "float")
+		self:RegisterCVar("target_fov", "TargetFOV", "float")
 
-		self:RegisterCVar("movement_lock_pitch", 0, "LockPitchEnabled", "boolean")
+		self:RegisterCVar("movement_lock_pitch", "LockPitchEnabled", "boolean")
 
-		self:RegisterCVar("movement_rtc_enable", 0, "RTCEnabled", "boolean")
-		self:RegisterCVar("movement_rtc_yaw_offset", 0, "RTCYawOffset", "float")
-		self:RegisterCVar("movement_rtc_turn_time", 0, "RTCTurnTime", "float")
-		self:RegisterCVar("movement_rtc_walk_focus", 1, "WalkFocusEnabled", "boolean")
+		self:RegisterCVar("movement_rtc_enable", "RTCEnabled", "boolean")
+		self:RegisterCVar("movement_rtc_yaw_offset", "RTCYawOffset", "float")
+		self:RegisterCVar("movement_rtc_turn_time", "RTCTurnTime", "float")
+		self:RegisterCVar("movement_rtc_walk_focus", "WalkFocusEnabled", "boolean")
 
-		self:RegisterCVar("hud_crosshair_enable", 0, "CrosshairEnabled", "boolean")
-		self:RegisterCVar("hud_crosshair_distance", 32000, "CrosshairDistance", "float")
-		self:RegisterCVar("hud_hide", 0, "HUDHidden", "boolean")
-		self:RegisterCVar("hud_hide_all", 0, "AllHUDHidden", "boolean")
-		self:RegisterCVar("hud_black_bars_enable", 0, "BlackBarsEnabled", "boolean")
-		self:RegisterCVar("hud_black_bars_amount", 0, "BlackBarAmount", "float")
+		self:RegisterCVar("hud_crosshair_enable", "CrosshairEnabled", "boolean")
+		self:RegisterCVar("hud_crosshair_distance", "CrosshairDistance", "float")
+		self:RegisterCVar("hud_hide", "HUDHidden", "boolean")
+		self:RegisterCVar("hud_hide_all", "AllHUDHidden", "boolean")
+		self:RegisterCVar("hud_black_bars_enable", "BlackBarsEnabled", "boolean")
+		self:RegisterCVar("hud_black_bars_amount", "BlackBarAmount", "float")
 
-		self:RegisterCVar("nodes_place_enable", 0, "NodePlacerEnabled", "boolean")
-		self:RegisterCVar("nodes_enable", 0, "NodesEnabled", "boolean")
-		self:RegisterCVar("nodes_draw", 0, "DrawingNodesEnabled", "boolean")
-		self:RegisterCVar("nodes_draw_spheres", 0, "DrawingNodeSpheresEnabled", "boolean")
-		self:RegisterCVar("nodes_load_by_map_name", 0, "LoadByMapNameEnabled", "boolean")
+		self:RegisterCVar("nodes_place_enable", "NodePlacerEnabled", "boolean")
+		self:RegisterCVar("nodes_enable", "NodesEnabled", "boolean")
+		self:RegisterCVar("nodes_draw", "DrawingNodesEnabled", "boolean")
+		self:RegisterCVar("nodes_draw_spheres", "DrawingNodeSpheresEnabled", "boolean")
+		self:RegisterCVar("nodes_load_by_map_name", "LoadByMapNameEnabled", "boolean")
 
-		self:RegisterCVar("center_offset_forward", 0, "CenterOffsetForward", "float")
-		self:RegisterCVar("center_offset_right", 0, "CenterOffsetRight", "float")
-		self:RegisterCVar("center_offset_up", 0, "CenterOffsetUp", "float")
+		self:RegisterCVar("center_offset_forward", "CenterOffsetForward", "float")
+		self:RegisterCVar("center_offset_right", "CenterOffsetRight", "float")
+		self:RegisterCVar("center_offset_up", "CenterOffsetUp", "float")
 
-		self:RegisterCVar("bone_name", "head", "Bone", "string")
+		self:RegisterCVar("bone_name", "Bone", "string")
 
-		self:RegisterCVar("trace_enable", 1, "TraceBlockEnabled", "boolean")
-		self:RegisterCVar("trace_smooth", 1, "TraceBlockSmoothEnabled", "boolean")
-		self:RegisterCVar("trace_forward", 20, "TraceForward", "float")
-		self:RegisterCVar("trace_down", 0, "TraceDown", "float")
+		self:RegisterCVar("trace_enable", "TraceBlockEnabled", "boolean")
+		self:RegisterCVar("trace_smooth", "TraceBlockSmoothEnabled", "boolean")
+		self:RegisterCVar("trace_forward", "TraceForward", "float")
+		self:RegisterCVar("trace_down", "TraceDown", "float")
 		
-		self:RegisterCVar("near_z", 1, "NearZ", "float")
+		self:RegisterCVar("near_z", "NearZ", "float")
 
 	end
 
@@ -316,10 +316,17 @@ do -- CVars
 		return math.Clamp(num, min, max)
 	end
 	
-	function ctp:RegisterCVar(name, default, namefunc, type, dontsave, min, max)
+	function ctp:RegisterCVar(name, namefunc, type, dontsave, min, max)
+	
 
 		name = name:lower()
 		type = type or "float"
+		local default = ctp.DefaultPresets[1].cvars[name] -- valve thirdperson
+		
+		if not default then
+			print("ctp missing default value for", name)
+			default = 0
+		end
 
 		self.CVars[name] = {cvar = CreateClientConVar("cl_ctp_" .. name, default, not dontsave), type = type, dontsave = dontsave}
 
@@ -377,7 +384,6 @@ do -- Enable
 		end
 
 		HOOK("CalcView", function(...) return ctp:CalcView(...) end)
-		HOOK("Think", function(...) return ctp:Think(...) end)
 		HOOK("CalcVehicleThirdPersonView", function(_, ...) return ctp:CalcView(...) end)
 		HOOK("CreateMove", function(ucmd) return ctp:CreateMove(ucmd) end)
 		HOOK("HUDPaintBackground", function() ctp:HUDPaintBackground() end)
@@ -425,6 +431,7 @@ do -- Enable
 		end
 
 		UNHOOK("CalcView")
+		UNHOOK("PreRender")
 		UNHOOK("Think")
 		UNHOOK("CalcVehicleThirdPersonView")
 		UNHOOK("CreateMove")
@@ -1080,14 +1087,15 @@ do -- CalcView
 	function ctp:CalcView()
 	
 		if GetViewEntity() ~= LocalPlayer() then return end
-		
+			
+		self:PreCalcView()
+			
 		table.insert(self.PlyPosHistory, self:GetPlayer():GetPos())
 
 		if #self.PlyPosHistory > self.HistoryCount then
 			table.remove(self.PlyPosHistory, 1)
 		end
 
-		local ply = LocalPlayer()
 		local pos = self.Origin
 		local ang = self.Direction:Angle() + Angle(-self:GetUserPitch(), self:GetUserYaw(), self:GetUserRoll() + self.Roll)
 		local fov = math.Clamp(self:GetFOV() or 0, 1, 150)
@@ -1100,14 +1108,11 @@ do -- CalcView
 			
 			znear = self:GetNearZ(),
 		}
-	
-		ply:SetupBones()
-		ply:InvalidateBoneCache()
 			
 		return tbl		
 	end
 
-	function ctp:Think()
+	function ctp:PreCalcView()
 	
 		local ply = LocalPlayer()
 	
@@ -1924,6 +1929,8 @@ do -- GUI
 					valve thirdperson;this is just like the valve thirdperson camera!
 					where the everything before " ; " is the name and everything after is the description]])
 				end
+				
+				ctp:LoadCVarPreset(self.presetname)
 			end
 
 			self.save = vgui.Create("DButton", self)
@@ -1944,21 +1951,6 @@ do -- GUI
 					self.choice:Clear()
 					self:Refresh()
 				end)
-			end
-
-			self.load = vgui.Create("DButton", self)
-			self.load:SetText("L")
-			self.load:NoClipping(true)
-			self.load:SetTooltip("Load")
-			self.load.DoClick = function()
-				if self.presetname then
-					--MsgN("Loading preset '" .. self.presetname .. "'")
-					if self:GetType() == "cvar" then
-						ctp:LoadCVarPreset(self.presetname)
-					elseif self:GetType() == "nodes" then
-						ctp:LoadNodePreset(self.presetname)
-					end
-				end
 			end
 
 			self.delete = vgui.Create("DButton", self)
@@ -2008,14 +2000,9 @@ do -- GUI
 			self.save:MoveLeftOf(self.delete, ctp.Spacing)
 			self.save:SetTall(self:GetTall() - (ctp.Spacing * 2))
 
-			self.load:SetWide(20)
-			self.load:AlignTop(ctp.Spacing)
-			self.load:MoveLeftOf(self.save, ctp.Spacing)
-			self.load:SetTall(self:GetTall() - (ctp.Spacing * 2))
-
 			self.choice:AlignTop(ctp.Spacing)
 			self.choice:AlignLeft(ctp.Spacing)
-			self.choice:StretchRightTo(self.load, ctp.Spacing)
+			self.choice:StretchRightTo(self.save, ctp.Spacing)
 			self.choice:SetTall(self:GetTall() - (ctp.Spacing * 2))
 
 		end
@@ -2322,13 +2309,11 @@ do -- GUI
 					choice:SetTooltip([[This controls the bone the camera will think where the
 					player is.]])
 					
-					choice.OnSelect = function(self, i, val)
-						RunConsoleCommand("cl_ctp_bone_name", val)
-					end
-
 					for key in SortedPairs(ctp.BoneList) do
 						choice:AddChoice(key)
 					end
+					
+					choice:ChooseOption(GetConVarString("cl_ctp_bone_name"))
 
 				self.target = vgui.Create("DForm")
 					self:AddItem(self.target)
@@ -2637,7 +2622,7 @@ do -- GUI
 
 
 				self.enable = vgui.Create("DButton", self)
-				self.enable:SetText("Toggle")
+				self.enable:SetText("Toggle Thirdperson")
 				self.enable.DoClick = function()
 					ctp:Toggle()
 				end
