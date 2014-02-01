@@ -568,6 +568,8 @@ do -- Presets
 					["trace_enable"] = 1,
 					["target_enable"] = 0,
 					["angles_limit_smooth"] = 0,
+					["near_z"] = 3,
+					["hud_hide_all"] = 0,
 					["smoother_fov"] = 40,
 				},
 			},
@@ -1106,7 +1108,7 @@ do -- CalcView
 			angles = ang,
 			fov = fov,
 			
-			znear = self:GetNearZ(),
+			znear = math.max(self:GetNearZ(), 0.1),
 		}
 			
 		return tbl		
