@@ -1,0 +1,14 @@
+{
+	"title" : "Customisable Thirdperson",
+	"type" : "tool",
+	"tags" : [ "fun", "scenic" ],
+	"ignore" :
+	[
+		".gitignore",
+		".git*",
+		"*.txt",
+		"*.md",
+		"*.bat",
+		"*.7z"
+	]
+}
