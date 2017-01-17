@@ -1333,7 +1333,7 @@ do -- CalcView
 				--end
 			end
 		end
-		
+
 		self.IsTargeting = false
 
 		if count == 0 then return end
