@@ -1324,7 +1324,7 @@ do -- CalcView
 				entity:GetMoveType() == MOVETYPE_VPHYSICS and
 				(entity:BoundingRadius() > 30 and
 				FindValueInTable(self.AllowedClasses, entity:GetClass())) and
-				hook.Call("PhysgunPickup", GAMEMODE, self:GetPlayer(), entity)
+				hook.Call("PhysgunPickup", GAMEMODE, self:GetPlayer(), entity) ~= false
 			then
 				local point = entity:IsPlayer() and entity:GetShootPos() or entity:OBBCenter() + entity:GetPos()
 				--if CheckAim(point) > 0.8 then
@@ -1333,7 +1333,7 @@ do -- CalcView
 				--end
 			end
 		end
-
+		
 		self.IsTargeting = false
 
 		if count == 0 then return end
@@ -1437,8 +1437,8 @@ do -- CalcView
 			end
 		end
 
-		if self:IsViewingFromNode() and self:GetNodeDirectionSmoother() < 35 then
-			self.SmoothDirection = LerpVector(self:GetFrameTime() * self:GetNodeDirectionSmoother(), self.SmoothDirection, self:GetDirection())
+		if self:IsViewingFromNode() and self:GetDirectionSmoother() < 35 then
+			self.SmoothDirection = LerpVector(self:GetFrameTime() * self:GetDirectionSmoother(), self.SmoothDirection, self:GetDirection())
 		elseif not self:IsViewingFromNode() and self:GetDirectionSmoother() < 35 then
 			self.SmoothDirection = LerpVector(self:GetFrameTime() * self:GetDirectionSmoother(), self.SmoothDirection, self:GetDirection())
 			self.SmoothRoll = Lerp(self:GetFrameTime() * self:GetDirectionSmoother(), self.SmoothRoll, self:GetRoll())
@@ -1538,7 +1538,7 @@ do -- Nodes
 
 	ctp.trail_material = Material("cable/redlaser")
 
-	ctp.sphere_model = ClientsideModel("models/Combine_Helicopter/helicopter_bomb01.mdl")
+	ctp.sphere_model = ClientsideModel("models/XQM/Rails/gumball_1.mdl")
 	ctp.sphere_model:SetNoDraw(true)
 	ctp.sphere_model:SetMaterial("models/debug/debugwhite")
 
