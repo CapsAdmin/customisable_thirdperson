@@ -9,6 +9,8 @@
 		"*.txt",
 		"*.md",
 		"*.bat",
-		"*.7z"
+		"*.7z",
+		"COPYING",
+		"readme.md",
 	]
 }
