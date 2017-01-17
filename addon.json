@@ -11,6 +11,6 @@
 		"*.bat",
 		"*.7z",
 		"COPYING",
-		"readme.md",
+		"readme.md"
 	]
 }
