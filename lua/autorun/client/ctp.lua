@@ -13,7 +13,7 @@ ctp.DisabledElements = {
 	"CHudAmmo",
 	"CHudSecondaryAmmo",
 	"CHudEPOE",
-} 
+}
 
 ctp.BoneList = {
 	["pelvis"] = "ValveBiped.Bip01_Pelvis",
@@ -191,22 +191,22 @@ do -- luadata
 
 	function luadata.Decode(str)
 		local func = CompileString("return {\n" .. str .. "\n}", "luadata", false)
-		
+
 		if type(func) == "string" then
 			MsgN("luadata decode error:")
 			MsgN(func)
-			
+
 			return {}
 		end
-		
+
 		local ok, err = pcall(func)
-		
+
 		if not ok then
 			MsgN("luadata decode error:")
 			MsgN(err)
 			return {}
 		end
-		
+
 		return err
 	end
 
@@ -219,7 +219,7 @@ do -- luadata
 			return luadata.Decode(file.Read(path) or "")
 		end
 	end
-	
+
 	ctp.luadata = luadata
 end
 
@@ -291,7 +291,7 @@ do -- CVars
 		self:RegisterCVar("trace_smooth", "TraceBlockSmoothEnabled", "boolean")
 		self:RegisterCVar("trace_forward", "TraceForward", "float")
 		self:RegisterCVar("trace_down", "TraceDown", "float")
-		
+
 		self:RegisterCVar("near_z", "NearZ", "float")
 
 	end
@@ -299,30 +299,30 @@ do -- CVars
 	function ctp:GetCVarValue(name)
 		return self[self.CVars[name]].GetVar()
 	end
-	
+
 	local function clamp(num, min, max)
 		if not min and not max then
 			return num
 		end
-		
+
 		if min and not max then
 			return math.max(num, min)
 		end
-		
+
 		if max and not min then
 			return math.min(num, max)
-		end		
-		
+		end
+
 		return math.Clamp(num, min, max)
 	end
-	
+
 	function ctp:RegisterCVar(name, namefunc, type, dontsave, min, max)
-	
+
 
 		name = name:lower()
 		type = type or "float"
 		local default = ctp.DefaultPresets[1].cvars[name] -- valve thirdperson
-		
+
 		if not default then
 			print("ctp missing default value for", name)
 			default = 0
@@ -353,7 +353,7 @@ do -- Enable
 	CreateClientConVar("ctp_enabled", "0", false, true)
 
 	local META = FindMetaTable("Player")
-	
+
 	function META:IsCTPEnabled()
 		return self:GetNWBool("ctp_enabled")
 	end
@@ -514,7 +514,7 @@ end
 do -- Presets
 
 	do -- default
-		ctp.DefaultPresets = 
+		ctp.DefaultPresets =
 		{
 			{
 				["name"] = "Valve Thirdperson",
@@ -864,10 +864,10 @@ do -- Presets
 				tbl.cvars[key] = cvar.GetVar()
 			end
 		end
-		
+
 		file.CreateDir("ctp")
 		file.CreateDir("ctp/cvar_presets")
-		
+
 		ctp.luadata.WriteFile("ctp/cvar_presets/" .. name .. ".txt", tbl, "DATA")
 	end
 
@@ -893,14 +893,14 @@ do -- Presets
 	end
 
 	ctp.CurrentPresets = {}
-	
+
 	function ctp:GetCVarPresets(folder)
 		folder = folder or "ctp/cvar_presets/"
 
 		local tbl = {}
 
 		local files = file.Find(folder .. "*", "DATA")
-		
+
 		for key, preset in pairs(files) do
 			local preset = ctp.luadata.ReadFile(folder .. preset, "DATA")
 			if preset.cvars then
@@ -913,7 +913,7 @@ do -- Presets
 			tbl[preset.name] = preset.description ~= "none" and preset.description or ""
 			ctp.CurrentPresets[preset.name] = preset
 		end
-		
+
 		return tbl
 	end
 
@@ -924,17 +924,17 @@ do -- Presets
 		tbl.name = name
 		tbl.description = description or "none"
 		tbl.nodes = table.Sanitise(self.Nodes)
-	
+
 		file.CreateDir("ctp")
 		file.CreateDir("ctp/node_presets")
-	
+
 		ctp.luadata.WriteFile("ctp/node_presets/" .. name .. ".txt", tbl, "DATA")
 
 	end
 
 	function ctp:LoadNodePreset(name)
 		local tbl = ctp.luadata.ReadFile(file.Read("ctp/node_presets/" .. name .. ".txt", "DATA"))
-	
+
 		if not tbl.nodes then MsgN("CTP tried to load node preset '" .. name .. "' but it doesn't exist!") return end
 
 		for key, value in pairs(tbl.nodes) do
@@ -954,18 +954,18 @@ do -- Presets
 
 	function ctp:GetNodePresets(folder)
 		folder = folder or "ctp/node_presets/"
-		
+
 		local tbl = {}
 
 		local files = file.Find(folder .. "*", "DATA")
-		
+
 		for key, preset in pairs(files) do
 			local preset = ctp.luadata.ReadFile(folder .. preset, "DATA")
 			if preset.nodes then
 				tbl[preset.name] = preset.description ~= "none" and preset.description or ""
 			end
 		end
-		
+
 		return tbl
 	end
 
@@ -1032,18 +1032,18 @@ do -- Meta
 		else
 			local bone = self:GetBone()
 			local pos
-						
+
 			if bone ~= "none" and ctp.BoneList[bone] then
 				local id = self:GetPlayer():LookupBone(ctp.BoneList[bone])
 				if id then
 					pos = self:GetPlayer():GetBonePosition(id)
 				end
 			end
-			
+
 			if not pos then
 				pos = self:GetPlayer():GetPos() + Vector(0,0,36)
 			end
-			
+
 			pos = pos + ((Angle(0, self:GetPlayer():EyeAngles().p, 0):Forward() * -self:GetCenterOffsetRight()))
 			pos = pos  + ((Angle(0, self:GetPlayer():EyeAngles().y, 0):Forward() * self:GetCenterOffsetForward()))
 			pos = pos  + ((self:GetPlayer():EyeAngles():Up() * self:GetCenterOffsetUp()))
@@ -1073,13 +1073,13 @@ do -- Meta
 	function ctp:GetPlyPosDelta()
 		return self.PlyPosHistory[1] - self.PlyPosHistory[self.HistoryCount-1]
 	end
-	
-	function ctp:GetFOV()
+
+	function ctp:GetFOV2()
 		local wep = self:GetPlayer():GetActiveWeapon()
 		if wep:IsValid() and wep:GetClass() == "gmod_camera" then
 			return self:GetPlayer():GetFOV()
 		end
-		
+
 		return self.FOV
 	end
 end
@@ -1087,11 +1087,11 @@ end
 do -- CalcView
 
 	function ctp:CalcView()
-	
+
 		if GetViewEntity() ~= LocalPlayer() then return end
-			
+
 		self:PreCalcView()
-			
+
 		table.insert(self.PlyPosHistory, self:GetPlayer():GetPos())
 
 		if #self.PlyPosHistory > self.HistoryCount then
@@ -1100,27 +1100,27 @@ do -- CalcView
 
 		local pos = self.Origin
 		local ang = self.Direction:Angle() + Angle(-self:GetUserPitch(), self:GetUserYaw(), self:GetUserRoll() + self.Roll)
-		local fov = math.Clamp(self:GetFOV() or 0, 1, 150)
-				
-		local tbl = 
+		local fov = math.Clamp(self:GetFOV2() or 0, 1, 150)
+
+		local tbl =
 		{
 			origin = pos,
 			angles = ang,
 			fov = fov,
-			
+
 			znear = math.max(self:GetNearZ(), 0.1),
 		}
-			
-		return tbl		
+
+		return tbl
 	end
 
 	function ctp:PreCalcView()
-	
+
 		local ply = LocalPlayer()
-	
+
 		if not self.taunt_cam_hacked and ply.m_CurrentPlayerClass then
 			local data = ply.m_CurrentPlayerClass.TauntCam
-			
+
 			if data then
 				if data.CreateMove then
 					local old = data.CreateMove
@@ -1130,7 +1130,7 @@ do -- CalcView
 						end
 					end
 				end
-				
+
 				if data.ShouldDrawLocalPlayer then
 					local old = data.ShouldDrawLocalPlayer
 					data.ShouldDrawLocalPlayer = function(...)
@@ -1139,7 +1139,7 @@ do -- CalcView
 						end
 					end
 				end
-				
+
 				if data.CalcView then
 					local old = data.CalcView
 					data.CalcView = function(...)
@@ -1148,16 +1148,16 @@ do -- CalcView
 						end
 					end
 				end
-				
+
 				self.taunt_cam_hacked = true
 			end
 		end
-	
+
 		self.Origin = self:GetPlayerPos()
 		self.Direction = vector_origin
 		self.Angles = self:GetPlayer():EyeAngles()
 		self.FOV = 0
-		
+
 		if self:IsZoomDistanceEnabled() then
 			self:CalcFOV()
 		end
@@ -1214,7 +1214,7 @@ do -- CalcView
 		end
 
 		self:CalcDrag()
-		
+
 		self.PrevOrigin = self.Origin
 		self.PrevDirection = self.Direction
 		self.PrevFOV = self.FOV
@@ -1287,7 +1287,7 @@ do -- CalcView
 
 	function ctp:CalcThreshold()
 		local distance = self:GetPlayerPos():Distance(self:GetPrevOrigin()) / (self:GetThresholdRadius() * 0.5)
-				
+
 		distance = math.Round(math.Clamp(distance ^ 7-0.2, 0, 1), 5)
 
 		self:SetRelativeOriginSpeed(distance)
@@ -1324,7 +1324,7 @@ do -- CalcView
 				entity:GetMoveType() == MOVETYPE_VPHYSICS and
 				(entity:BoundingRadius() > 30 and
 				FindValueInTable(self.AllowedClasses, entity:GetClass())) and
-				hook.Call("PhysgunPickup", GAMEMODE, self:GetPlayer(), entity)
+				hook.Call("PhysgunPickup", GAMEMODE, self:GetPlayer(), entity) ~= false
 			then
 				local point = entity:IsPlayer() and entity:GetShootPos() or entity:OBBCenter() + entity:GetPos()
 				--if CheckAim(point) > 0.8 then
@@ -1358,7 +1358,7 @@ do -- CalcView
 
 		local a1 = self:GetDirection():Angle()
 		local a2 = (pos - self:GetPrevOrigin()):Angle()
-		local FOV = self:GetFOV() / 3
+		local FOV = self:GetFOV2() / 3
 		local dir = a2:Forward() *-1
 
 		local dot = math.Clamp(Angle(0, a1.y, 0):Forward():DotProduct(dir), 0, 1)
@@ -1382,7 +1382,7 @@ do -- CalcView
 
 			self.SmoothDirection = self:GetDirection()
 			self.SmoothOrigin = self:GetOrigin()
-			self.SmoothFOV = self:GetFOV()
+			self.SmoothFOV = self:GetFOV2()
 
 			self.IsCTRLE = true
 		end
@@ -1391,15 +1391,15 @@ do -- CalcView
 	function ctp:CalcTraceBlock()
 		local ply = self:GetPlayer()
 		local veh = ply:GetVehicle()
-		
+
 		local filter
-		
+
 		if veh:IsValid() then
 			filter = ents.FindInSphere(veh:GetPos(), veh:BoundingRadius() * 4)
 		else
 			filter = ents.FindInSphere(ply:GetPos(), ply:BoundingRadius() * 4)
 		end
-		
+
 		local trace_forward = util.TraceLine({
 			start = self:GetPlayerPos(),
 			endpos = self:GetOrigin(),
@@ -1437,8 +1437,8 @@ do -- CalcView
 			end
 		end
 
-		if self:IsViewingFromNode() and self:GetNodeDirectionSmoother() < 35 then
-			self.SmoothDirection = LerpVector(self:GetFrameTime() * self:GetNodeDirectionSmoother(), self.SmoothDirection, self:GetDirection())
+		if self:IsViewingFromNode() and self:GetDirectionSmoother() < 35 then
+			self.SmoothDirection = LerpVector(self:GetFrameTime() * self:GetDirectionSmoother(), self.SmoothDirection, self:GetDirection())
 		elseif not self:IsViewingFromNode() and self:GetDirectionSmoother() < 35 then
 			self.SmoothDirection = LerpVector(self:GetFrameTime() * self:GetDirectionSmoother(), self.SmoothDirection, self:GetDirection())
 			self.SmoothRoll = Lerp(self:GetFrameTime() * self:GetDirectionSmoother(), self.SmoothRoll, self:GetRoll())
@@ -1447,9 +1447,9 @@ do -- CalcView
 		end
 
 		if self:GetFOVSmoother() < 35 then
-			self.SmoothFOV = Lerp(self:GetFrameTime() * self:GetFOVSmoother(), self.SmoothFOV, self:GetFOV())
+			self.SmoothFOV = Lerp(self:GetFrameTime() * self:GetFOVSmoother(), self.SmoothFOV, self:GetFOV2())
 		else
-			self.SmoothFOV = self:GetFOV()
+			self.SmoothFOV = self:GetFOV2()
 		end
 
 		self:SetOrigin(self.SmoothOrigin)
@@ -1465,10 +1465,10 @@ do -- Dragging
 	function ctp:PreventScreenClicks()
 		return true
 	end
-	
+
 	function ctp:GUIMousePressed(code)
 		if self.not_focused then return end
-	
+
 		if code == MOUSE_LEFT then
 			self.MousePos = Vector(gui.MousePos())
 			self.dragging = true
@@ -1538,7 +1538,7 @@ do -- Nodes
 
 	ctp.trail_material = Material("cable/redlaser")
 
-	ctp.sphere_model = ClientsideModel("models/Combine_Helicopter/helicopter_bomb01.mdl")
+	ctp.sphere_model = ClientsideModel("models/XQM/Rails/gumball_1.mdl")
 	ctp.sphere_model:SetNoDraw(true)
 	ctp.sphere_model:SetMaterial("models/debug/debugwhite")
 
@@ -1784,7 +1784,7 @@ do -- HUD
 
 	function ctp:DrawBlackBars()
 
-		local amount = (-self:GetFOV() + 75) * self:GetBlackBarAmount()
+		local amount = (-self:GetFOV2() + 75) * self:GetBlackBarAmount()
 
 		surface.SetDrawColor(0, 0, 0, 255)
 
@@ -1829,7 +1829,7 @@ do -- HUD
 			return false
 		end
 	end
-	
+
 end
 
 do -- Mouse To World
@@ -1931,7 +1931,7 @@ do -- GUI
 					valve thirdperson;this is just like the valve thirdperson camera!
 					where the everything before " ; " is the name and everything after is the description]])
 				end
-				
+
 				ctp:LoadCVarPreset(self.presetname)
 			end
 
@@ -1941,8 +1941,8 @@ do -- GUI
 			self.save:SetTooltip("Save")
 			self.save.DoClick = function()
 				--MsgN("Saving preset '" .. self.choice:GetValue() .. "'")
-				
-				Derma_StringRequest("filename", "enter the filename", self.presetname or "", function(str)					
+
+				Derma_StringRequest("filename", "enter the filename", self.presetname or "", function(str)
 					local name, description = unpack(string.Explode(";", str))
 					description = description or self.currentdata
 					if self:GetType() == "cvar" then
@@ -2021,7 +2021,7 @@ do -- GUI
 			self:SetDecimals(1)
 		end
 
-		function PANEL:PerformLayout()		
+		function PANEL:PerformLayout()
 			self.Label:SetPos(0, 0)
 			self.Label:CenterVertical()
 			self.Label:SizeToContents()
@@ -2103,21 +2103,21 @@ do -- GUI
 	end
 
 	do -- ctp_MainFrame
-	
+
 		local NumSlider = function(self, strLabel, strConVar, numMin, numMax, dec)
 			local left = vgui.Create( "ctp_Slider", self )
 			left:SetText( strLabel )
 			left:SetMinMax( numMin, numMax )
 			if dec then left:SetDecimals(dec) end
-			
+
 			left:SetConVar(strConVar)
 			left:SizeToContents()
-			
+
 			self:AddItem(left, nil)
-			
+
 			return left
 		end
-	
+
 		do -- ctp_SheetBase
 			local PANEL = vgui.Register("ctp_SheetBase", {}, "DPanelList")
 
@@ -2126,10 +2126,10 @@ do -- GUI
 				self:EnableVerticalScrollbar(true)
 				self:SetPadding(ctp.Spacing)
 				self:SetSpacing(ctp.Spacing)
-	
+
 				self:Rebuild()
 			end
-			
+
 			function PANEL:Paint(w, h)
 				derma.SkinHook("Paint", "Tree", self, w, h)
 			end
@@ -2197,7 +2197,7 @@ do -- GUI
 				self.BaseClass.Init(self)
 			end
 		end
-		
+
 		do -- ctp_SheetDirection
 			local PANEL = vgui.Register("ctp_SheetDirection", {}, "ctp_SheetBase")
 
@@ -2310,11 +2310,11 @@ do -- GUI
 
 					choice:SetTooltip([[This controls the bone the camera will think where the
 					player is.]])
-					
+
 					for key in SortedPairs(ctp.BoneList) do
 						choice:AddChoice(key)
 					end
-					
+
 					choice:ChooseOption(GetConVarString("cl_ctp_bone_name"))
 
 				self.target = vgui.Create("DForm")
@@ -2419,7 +2419,7 @@ do -- GUI
 
 					self.hud:CheckBox("Hide All", "cl_ctp_hud_hide_all"):SetTooltip(
 					[[Hides all hud elements.]])
-					
+
 					self.hud:CheckBox("Crosshair", "cl_ctp_hud_crosshair_enable"):SetTooltip(
 					[[Draws a crosshair]])
 
