@@ -40,6 +40,8 @@ ctp.BoneList = {
 	["left_foot"] = "ValveBiped.Bip01_L_Foot",
 	["left_toe"] = "ValveBiped.Bip01_L_Toe0",
 	["none"] = "none",
+	["eyepos"] = "eyepos",
+	["bottom"] = "bottom",
 }
 
 ctp.DisabledHooks = {
@@ -293,6 +295,7 @@ do -- CVars
 		self:RegisterCVar("trace_down", "TraceDown", "float")
 
 		self:RegisterCVar("near_z", "NearZ", "float")
+		self:RegisterCVar("relative_near_z", "RelativeNearZ", "boolean")
 
 	end
 
@@ -806,16 +809,16 @@ do -- Presets
 					["center_offset_forward"] = 0,
 					["hud_crosshair_enable"] = 1,
 					["hud_black_bars_enable"] = 0,
-					["offset_right"] = 1000,
+					["offset_right"] = 15000,
 					["trace_forward"] = 20,
 					["lerp_aim"] = 0,
-					["offset_up"] = 1000,
+					["offset_up"] = 15000,
 					["target_radius"] = 400,
 					["smoother_nodes_direction"] = 50,
 					["threshold_radius"] = 0,
 					["bone_name"] = "none",
 					["hud_crosshair_distance"] = 100,
-					["movement_rtc_yaw_offset"] = -45,
+					["movement_rtc_yaw_offset"] = 0,
 					["angles_pitch"] = 0,
 					["angles_roll_amount"] = 0,
 					["movement_lock_pitch"] = 1,
@@ -826,13 +829,13 @@ do -- Presets
 					["nodes_draw_spheres"] = 0,
 					["smoother_direction"] = 10,
 					["offset_fov_zoom_distance_enabled"] = 0,
-					["offset_fov"] = 10,
+					["offset_fov"] = 0,
 					["offset_fov_zoom_distance_min"] = 7,
 					["offset_relative"] = 0,
 					["trace_down"] = 0,
 					["target_lerp"] = 100,
 					["offset_lock_z"] = 0,
-					["offset_forward"] = 1000,
+					["offset_forward"] = 15000,
 					["nodes_place_enable"] = 0,
 					["angles_roll"] = 0,
 					["center_offset_up"] = 0,
@@ -846,6 +849,65 @@ do -- Presets
 					["target_enable"] = 0,
 					["angles_limit_smooth"] = 0,
 					["smoother_fov"] = 40,
+					["near_z"] = 30,
+					["relative_near_z"] = 1,
+				},
+			},
+			{
+				["name"] = "Platformer",
+				["description"] = "Isometric view",
+				["cvars"] = {
+					["offset_fov_zoom_distance"] = 1200,
+					["smoother_origin"] = 10,
+					["nodes_load_by_map_name"] = 0,
+					["hud_hide"] = 1,
+					["movement_rtc_walk_focus"] = 0,
+					["nodes_enable"] = 0,
+					["center_offset_forward"] = 100,
+					["hud_crosshair_enable"] = 1,
+					["hud_black_bars_enable"] = 0,
+					["offset_right"] = 15000,
+					["trace_forward"] = 20,
+					["lerp_aim"] = 0,
+					["offset_up"] = 0,
+					["target_radius"] = 400,
+					["smoother_nodes_direction"] = 50,
+					["threshold_radius"] = 0,
+					["bone_name"] = "none",
+					["hud_crosshair_distance"] = 100,
+					["movement_rtc_yaw_offset"] = 0,
+					["angles_pitch"] = 0,
+					["angles_roll_amount"] = 0,
+					["movement_lock_pitch"] = 1,
+					["trace_smooth"] = 0,
+					["angles_yaw"] = 0,
+					["threshold_enabled"] = 0,
+					["nodes_draw"] = 0,
+					["nodes_draw_spheres"] = 0,
+					["smoother_direction"] = 2,
+					["offset_fov_zoom_distance_enabled"] = 0,
+					["offset_fov"] = 0,
+					["offset_fov_zoom_distance_min"] = 7,
+					["offset_relative"] = 0,
+					["trace_down"] = 0,
+					["target_lerp"] = 100,
+					["offset_lock_z"] = 0,
+					["offset_forward"] = 0,
+					["nodes_place_enable"] = 0,
+					["angles_roll"] = 0,
+					["center_offset_up"] = 40,
+					["angles_limit"] = 0,
+					["movement_rtc_turn_time"] = 15,
+					["movement_rtc_enable"] = 1,
+					["target_fov"] = 40,
+					["center_offset_right"] = 0,
+					["hud_black_bars_amount"] = 0,
+					["trace_enable"] = 0,
+					["target_enable"] = 0,
+					["angles_limit_smooth"] = 0,
+					["smoother_fov"] = 40,
+					["near_z"] = 0,
+					["relative_near_z"] = 30,
 				},
 			}
 		}
@@ -1032,8 +1094,12 @@ do -- Meta
 		else
 			local bone = self:GetBone()
 			local pos
-
-			if bone ~= "none" and ctp.BoneList[bone] then
+			
+			if bone == "bottom" then
+				pos = self:GetPlayer():GetPos()
+			elseif bone == "eyepos" then
+				pos = self:GetPlayer():EyePos()
+			elseif bone ~= "none" and ctp.BoneList[bone] then
 				local id = self:GetPlayer():LookupBone(ctp.BoneList[bone])
 				if id then
 					pos = self:GetPlayer():GetBonePosition(id)
@@ -1108,7 +1174,7 @@ do -- CalcView
 			angles = ang,
 			fov = fov,
 
-			znear = math.max(self:GetNearZ(), 0.1),
+			znear = math.max(self.CalculatedNearZ or self:GetNearZ(), 0.01),
 		}
 
 		return tbl
@@ -1181,12 +1247,29 @@ do -- CalcView
 		end
 
 ---		print(self:IsTraceBlockEnabled(), self:IsTraceBlockSmoothEnabled())
-
+		
+		if self:IsRelativeNearZ() then
+			local trace_forward = util.TraceHull({
+				mins = self:GetPlayer():OBBMins(),
+				maxs = self:GetPlayer():OBBMaxs(),
+				start = self:GetPlayerPos(),
+				endpos = self:GetOrigin(),
+				filter = ents.FindInSphere(ply:GetPos(), ply:BoundingRadius() * 4),
+			})
+			
+			if trace_forward.Hit then
+				self.CalculatedNearZ = self:GetOrigin():Distance(trace_forward.HitPos) - self:GetNearZ()--self.FOV / trace_forward.StartPos:Distance(trace_forward.HitPos)
+			else
+				self.CalculatedNearZ = nil--self:GetOrigin():Distance(self:GetPlayerPos()) - self:GetNearZ()
+			end
+		else
+			self.CalculatedNearZ = nil
+		end
+		
 		if self:IsTraceBlockEnabled() and self:IsTraceBlockSmoothEnabled() then
 			self:CalcTraceBlock()
 		end
-
-
+		
 		if self:GetTraceDown() > 0 then
 			self:CalcDownTrace()
 		end
@@ -1405,7 +1488,7 @@ do -- CalcView
 			endpos = self:GetOrigin(),
 			filter = filter,
 		})
-
+	
 		if trace_forward.Hit and trace_forward.Entity ~= self:GetPlayer() and not trace_forward.Entity:IsPlayer() and not trace_forward.Entity:IsVehicle() then
 			self:SetOrigin(trace_forward.HitPos + (self:GetDirection() * self:GetTraceForward()))
 			self.SmoothOrigin = self:GetOrigin()
@@ -2193,6 +2276,9 @@ do -- GUI
 
 					self.misc:NumSlider("Near Z", "cl_ctp_near_z", 1, 50, 1):SetTooltip(
 					[[The higher this is the less flickering you will see. This is very useful for addons like PAC.]])
+					
+					self.misc:CheckBox("Relative Near Z", "cl_ctp_relative_near_z"):SetTooltip(
+					[[Makes the near z plane be relative to player]])
 
 				self.BaseClass.Init(self)
 			end
