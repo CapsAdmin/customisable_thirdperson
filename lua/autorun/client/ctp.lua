@@ -574,6 +574,7 @@ do -- Presets
 					["near_z"] = 3,
 					["hud_hide_all"] = 0,
 					["smoother_fov"] = 40,
+					["relative_near_z"] = 0,
 				},
 			},
 			{
@@ -629,6 +630,8 @@ do -- Presets
 					["target_enable"] = 1,
 					["angles_limit_smooth"] = 0,
 					["smoother_fov"] = 1,
+					["near_z"] = 30,
+					["relative_near_z"] = 0,
 				},
 			},
 			{
@@ -684,6 +687,8 @@ do -- Presets
 					["target_enable"] = 1,
 					["angles_limit_smooth"] = 1,
 					["smoother_fov"] = 3,
+					["near_z"] = 30,
+					["relative_near_z"] = 0,
 				},
 			},
 			{
@@ -739,6 +744,8 @@ do -- Presets
 					["target_enable"] = 0,
 					["angles_limit_smooth"] = 1,
 					["smoother_fov"] = 3,
+					["near_z"] = 30,
+					["relative_near_z"] = 0,
 				},
 			},
 			{
@@ -794,6 +801,8 @@ do -- Presets
 					["target_enable"] = 0,
 					["angles_limit_smooth"] = 0,
 					["smoother_fov"] = 2,
+					["near_z"] = 30,
+					["relative_near_z"] = 0,
 				},
 			},
 			{
@@ -906,8 +915,8 @@ do -- Presets
 					["target_enable"] = 0,
 					["angles_limit_smooth"] = 0,
 					["smoother_fov"] = 40,
-					["near_z"] = 0,
-					["relative_near_z"] = 30,
+					["near_z"] = 30,
+					["relative_near_z"] = 1,
 				},
 			}
 		}
@@ -1258,7 +1267,7 @@ do -- CalcView
 			})
 			
 			if trace_forward.Hit then
-				self.CalculatedNearZ = self:GetOrigin():Distance(trace_forward.HitPos) - self:GetNearZ()--self.FOV / trace_forward.StartPos:Distance(trace_forward.HitPos)
+				self.CalculatedNearZ = math.max(self:GetOrigin():Distance(trace_forward.HitPos) - self:GetNearZ(), self:GetNearZ())
 			else
 				self.CalculatedNearZ = nil--self:GetOrigin():Distance(self:GetPlayerPos()) - self:GetNearZ()
 			end
@@ -1266,10 +1275,10 @@ do -- CalcView
 			self.CalculatedNearZ = nil
 		end
 		
-		if self:IsTraceBlockEnabled() and self:IsTraceBlockSmoothEnabled() then
+		if self:IsTraceBlockEnabled() and not self:IsThresholdEnabled() then
 			self:CalcTraceBlock()
 		end
-		
+				
 		if self:GetTraceDown() > 0 then
 			self:CalcDownTrace()
 		end
@@ -1287,13 +1296,13 @@ do -- CalcView
 		self:CalcShortcuts()
 
 		self:CalcSmoothing()
+		
+		if self:IsTraceBlockEnabled() and self:IsThresholdEnabled() then
+			self:CalcTraceBlock()
+		end
 
 		if self:IsAngleLimitEnabled() and not self:IsAngleLimitSmoothEnabled() then
 			self:CalcAngleLimit()
-		end
-
-		if self:IsTraceBlockEnabled() and not self:IsTraceBlockSmoothEnabled() then
-			self:CalcTraceBlock()
 		end
 
 		self:CalcDrag()
@@ -1488,10 +1497,12 @@ do -- CalcView
 			endpos = self:GetOrigin(),
 			filter = filter,
 		})
-	
-		if trace_forward.Hit and trace_forward.Entity ~= self:GetPlayer() and not trace_forward.Entity:IsPlayer() and not trace_forward.Entity:IsVehicle() then
+				
+		if trace_forward.Hit and trace_forward.Entity ~= self:GetPlayer() and not trace_forward.Entity:IsPlayer() and not trace_forward.Entity:IsVehicle() and trace_forward.HitPos:Distance(trace_forward.StartPos) > 0 then
 			self:SetOrigin(trace_forward.HitPos + (self:GetDirection() * self:GetTraceForward()))
-			self.SmoothOrigin = self:GetOrigin()
+			if self:IsThresholdEnabled() then
+				self.SmoothOrigin = self:GetOrigin()
+			end
 		end
 	end
 
@@ -2240,8 +2251,8 @@ do -- GUI
 					[[Enables the trace block which will move the camera forward if
 					something is in the way of the player and the camera]])
 
-					self.trace:CheckBox("Smooth", "cl_ctp_trace_smooth"):SetTooltip(
-					[[If this is checked, it will obey the position smoother]])
+					-- self.trace:CheckBox("Smooth", "cl_ctp_trace_smooth"):SetTooltip(
+					-- [[If this is checked, it will obey the position smoother]])
 
 					self.trace:NumSlider("Forward", "cl_ctp_trace_forward", -100, 100, 2):SetTooltip(
 					[[This is the how much forward the camera will go from the blocking point]])
