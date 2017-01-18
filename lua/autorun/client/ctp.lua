@@ -499,7 +499,7 @@ do -- Enable
 	end)
 
 	hook.Add("PopulateToolMenu", "ctp_PopulateToolMenu", function()
-		spawnmenu.AddToolMenuOption("Options",
+		spawnmenu.AddToolMenuOption("Utilities",
 			"Visuals",
 			"CTP",
 			"CTP Options",    "",    "",
@@ -1156,10 +1156,10 @@ do -- CalcView
 		self.Origin = self:GetPlayerPos()
 		self.Direction = vector_origin
 		self.Angles = self:GetPlayer():EyeAngles()
-		self.FOV = 0
+		self.FOV = self:GetFOV()
 
 		if self:IsZoomDistanceEnabled() then
-			self:CalcFOV()
+			self:CalcZoomDistance()
 		end
 
 		if not self:IsThresholdEnabled() then
@@ -1220,7 +1220,7 @@ do -- CalcView
 		self.PrevFOV = self.FOV
 	end
 
-	function ctp:CalcFOV()
+	function ctp:CalcZoomDistance()
 		self:SetFOV(math.Clamp((-(self:GetPlayerPos() - self:GetPrevOrigin()):Length() + self:GetZoomDistance())  / (self:GetZoomDistance() / 100), self:GetMinZoomDistance(), 75))
 	end
 
