@@ -496,7 +496,11 @@ do -- Enable
 	concommand.Add("ctp", function()
 		ctp:Toggle()
 	end)
-
+	
+	concommand.Add("thirdperson_toggle", function()
+		ctp:Toggle()		
+	end)
+	
 	concommand.Add("ctp_toggle_menu", function()
 		ctp:ToggleMenu()
 	end)
