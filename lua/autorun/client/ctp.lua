@@ -217,8 +217,8 @@ do -- luadata
 			file.Write(path, luadata.Encode(tbl))
 		end
 
-		function luadata.ReadFile(path)
-			return luadata.Decode(file.Read(path) or "")
+		function luadata.ReadFile(path, where)
+			return luadata.Decode(file.Read(path, where) or "")
 		end
 	end
 
@@ -998,7 +998,7 @@ do -- Presets
 
 		tbl.name = name
 		tbl.description = description or "none"
-		tbl.nodes = table.Sanitise(self.Nodes)
+		tbl.nodes = self.Nodes
 
 		file.CreateDir("ctp")
 		file.CreateDir("ctp/node_presets")
@@ -1008,11 +1008,19 @@ do -- Presets
 	end
 
 	function ctp:LoadNodePreset(name)
-		local tbl = ctp.luadata.ReadFile(file.Read("ctp/node_presets/" .. name .. ".txt", "DATA"))
+		local tbl = ctp.luadata.ReadFile("ctp/node_presets/" .. name .. ".txt", "DATA")
 
 		if not tbl.nodes then MsgN("CTP tried to load node preset '" .. name .. "' but it doesn't exist!") return end
 
-		for key, value in pairs(tbl.nodes) do
+        for key, value in pairs(tbl.nodes) do
+            if type(value.point) == "table" and value.point.__type then
+                if value.point.__type == "Vector" then
+                    value.point = Vector(value.point.x, value.point.y, value.point.z)
+                end
+            end
+            if type(value.size) == "string" then
+                value.size = tonumber(value.size)
+            end
 			table.insert(self.Nodes, value)
 		end
 
